@@ -1,11 +1,5 @@
 .container {
-  display: flex;
-  justify-content: space-evenly;
-  color: rgb(17, 1, 70);
-}
-.App {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 16px;
-  padding-bottom: 24px;
+  max-width: 1200px;
+  padding: 0 15px;
+  margin: 0 auto;
 }

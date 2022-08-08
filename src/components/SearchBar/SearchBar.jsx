@@ -1,19 +1,49 @@
 import s from './SearchBar.module.css';
+import { Component } from 'react';
+import { ImSearch } from 'react-icons/im';
+import { toast } from 'react-toastify';
 
-<header class="searchbar">
-  <form class="form">
-    <button type="submit" class="button">
-      <span class="button-label">Search</span>
-    </button>
+export default class SearchBar extends Component {
+  state = {
+    searchValueInForm: '',
+  };
 
-    <input
-      class="input"
-      type="text"
-      autocomplete="off"
-      autofocus
-      placeholder="Search images and photos"
-    />
-  </form>
-</header>;
+  handleSearchValue = e => {
+    this.setState({
+      searchValueInForm: e.currentTarget.value.toLowerCase().trim(),
+    });
+  };
 
-export default SearchBar;
+  handleSubmit = e => {
+    e.preventDefault();
+    const { searchValueInForm } = this.state;
+    if (searchValueInForm.trim() === '') {
+      toast.error('Введите имя запроса.');
+      return;
+    }
+
+    this.props.onClickSubmit(searchValueInForm);
+    this.setState({ searchValueInForm: '' });
+  };
+
+  render() {
+    return (
+      <header className={s.searchbar}>
+        <form className={s.searchform} onSubmit={this.handleSubmit}>
+          <button className={s.searchform__button} type="submit">
+            <ImSearch style={{ width: 20, height: 20 }} />
+          </button>
+          <input
+            className={s.searchform__input}
+            type="text"
+            autoComplete="off"
+            autoFocus
+            placeholder="Search images and photos"
+            value={this.state.searchValueInForm}
+            onChange={this.handleSearchValue}
+          />
+        </form>
+      </header>
+    );
+  }
+}
