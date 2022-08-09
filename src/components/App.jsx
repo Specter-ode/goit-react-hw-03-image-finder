@@ -30,7 +30,7 @@ export default class App extends Component {
           pageNumber={page}
           onLoadMoreInGallery={this.onLoadMoreInApp}
         />
-        <ToastContainer autoClose={2500} />
+        <ToastContainer autoClose={2500} hideProgressBar />
       </div>
     );
   }
