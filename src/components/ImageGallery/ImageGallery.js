@@ -18,6 +18,12 @@ export default class ImageGallery extends Component {
     error: null,
     showModal: false,
   };
+  componentDidMount() {
+    toast.success(`Welcome !!!`, {
+      position: 'bottom-center',
+      theme: 'dark',
+    });
+  }
   componentDidUpdate(prevProps, prevState) {
     const newRequest = this.props.request;
     const newPageNumber = this.props.pageNumber;
