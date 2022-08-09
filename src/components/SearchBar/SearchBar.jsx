@@ -10,7 +10,7 @@ export default class SearchBar extends Component {
 
   handleSearchValue = e => {
     this.setState({
-      searchValueInForm: e.currentTarget.value.toLowerCase().trim(),
+      searchValueInForm: e.currentTarget.value.toLowerCase(),
     });
   };
 
@@ -18,7 +18,9 @@ export default class SearchBar extends Component {
     e.preventDefault();
     const { searchValueInForm } = this.state;
     if (searchValueInForm.trim() === '') {
-      toast.error('Введите имя запроса.');
+      toast.error('Введите имя запроса.', {
+        theme: 'colored',
+      });
       return;
     }
 
