@@ -8,24 +8,29 @@ import 'react-toastify/dist/ReactToastify.css';
 export default class App extends Component {
   state = {
     searchValueInApp: '',
+    page: 1,
   };
 
   handleFormSubmit = searchValueInApp => {
-    this.setState({ searchValueInApp });
-    console.log(searchValueInApp);
+    this.setState({ searchValueInApp, page: 1 });
   };
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
+
+  onLoadMoreInApp = () => {
+    this.setState(({ page }) => ({
+      page: page + 1,
     }));
   };
   render() {
-    const { searchValueInApp } = this.state;
+    const { searchValueInApp, page } = this.state;
     return (
       <div className={s.app}>
         <SearchBar onClickSubmit={this.handleFormSubmit} />
-        <ImageGallery request={searchValueInApp} />
-        <ToastContainer autoClose={2000} />
+        <ImageGallery
+          request={searchValueInApp}
+          pageNumber={page}
+          onLoadMoreInGallery={this.onLoadMoreInApp}
+        />
+        <ToastContainer autoClose={2500} />
       </div>
     );
   }

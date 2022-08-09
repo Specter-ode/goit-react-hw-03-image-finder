@@ -1,7 +1,8 @@
 import s from './ImageGallery.module.css';
+import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { Component } from 'react';
-import { getImages } from '../API/getImages';
+import { getImages } from '../../API/getImages';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import Button from '../Button/Button';
 import Modal from '../Modal/Modal';
@@ -10,29 +11,21 @@ import Spinner from '../Spinner/Spinner';
 export default class ImageGallery extends Component {
   state = {
     cards: [],
-    page: 1,
     totalPages: '',
-    request: '',
     modalContent: '',
     description: '',
     loading: false,
     error: null,
     showModal: false,
   };
-
   componentDidUpdate(prevProps, prevState) {
-    const prevRequest = prevProps.request;
     const newRequest = this.props.request;
-    const prevPage = prevState.page;
-    const { page } = this.state;
-    console.log('page: ', page);
-    if (prevRequest !== newRequest) {
-      this.setState({ cards: [], totalPages: '', page: 1 });
-      console.log('page: ', page);
+    const newPageNumber = this.props.pageNumber;
+    if (newRequest !== prevProps.request) {
+      this.setState({ cards: [], totalPages: '' });
       this.fetchImages();
-      return;
     }
-    if (page > prevPage) {
+    if (newPageNumber > prevProps.pageNumber) {
       this.fetchImages();
     }
   }
@@ -42,27 +35,24 @@ export default class ImageGallery extends Component {
       loading: true,
       error: false,
     });
-    const { page } = this.state;
-    const { request } = this.props;
-    console.log(request);
+    const { request, pageNumber } = this.props;
     try {
-      const { hits, totalHits } = await getImages(request, page);
+      const { hits, totalHits } = await getImages(request, pageNumber);
       const total = Math.ceil(totalHits / 12);
       this.setState(({ cards }) => {
         return { cards: [...cards, ...hits], totalPages: total };
       });
-      console.log('page before (page === 1): ', page);
       if (totalHits === 0) {
         toast.error(`Nothing found, try again`, {
           theme: 'colored',
         });
       }
-      if (page === 1) {
+      if (totalHits !== 0 && pageNumber === 1) {
         toast.info(`Find ${totalHits}image/${total}pages`, {
           theme: 'colored',
         });
       }
-      if (page > 1 && page === total) {
+      if (pageNumber > 1 && pageNumber === total) {
         toast.warn(`This is last page. Make new search`, {
           theme: 'colored',
         });
@@ -87,7 +77,6 @@ export default class ImageGallery extends Component {
 
   setModalContent = cardId => {
     const { cards } = this.state;
-    console.log(cardId);
     const card = cards.find(({ id }) => id === cardId);
     this.setState({
       modalContent: card.largeImageURL,
@@ -95,22 +84,18 @@ export default class ImageGallery extends Component {
       showModal: true,
     });
   };
-  onLoadMore = () => {
-    this.setState(({ page }) => ({
-      page: page + 1,
-    }));
-  };
   render() {
-    const { cards, loading, page, modalContent, description, showModal, totalPages } = this.state;
-    const { setModalContent, onLoadMore, toggleModal } = this;
+    const { cards, loading, modalContent, description, showModal, totalPages } = this.state;
+    const { setModalContent, toggleModal } = this;
+    const { pageNumber, onLoadMoreInGallery } = this.props;
     const elements = cards.map(element => (
       <ImageGalleryItem key={element.id} {...element} onClickImage={setModalContent} />
     ));
-    const buttonVision = cards.length > 0 && page < totalPages && !loading;
+    const buttonVision = cards.length > 0 && pageNumber < totalPages && !loading;
     return (
       <>
         <ul className={s.gallery}>{elements}</ul>
-        {buttonVision && <Button onClickBtn={onLoadMore} title="Load more" />}
+        {buttonVision && <Button onLoadMoreInButton={onLoadMoreInGallery} title="Load more" />}
         {showModal && (
           <Modal onClose={toggleModal}>
             <img src={modalContent} alt={description} />
@@ -121,3 +106,9 @@ export default class ImageGallery extends Component {
     );
   }
 }
+
+ImageGallery.propTypes = {
+  request: PropTypes.string.isRequired,
+  pageNumber: PropTypes.number.isRequired,
+  onLoadMoreInGallery: PropTypes.func.isRequired,
+};

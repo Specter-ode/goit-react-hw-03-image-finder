@@ -1,4 +1,5 @@
 import s from './ImageGalleryItem.module.css';
+import PropTypes from 'prop-types';
 
 const ImageGalleryItem = props => {
   const { id, webformatURL, tags, onClickImage } = props;
@@ -13,6 +14,13 @@ const ImageGalleryItem = props => {
       />
     </li>
   );
+};
+
+ImageGalleryItem.propTypes = {
+  id: PropTypes.number.isRequired,
+  tags: PropTypes.string.isRequired,
+  webformatURL: PropTypes.string.isRequired,
+  onClickImage: PropTypes.func.isRequired,
 };
 
 export default ImageGalleryItem;

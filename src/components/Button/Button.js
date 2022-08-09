@@ -1,14 +1,15 @@
 import s from './Button.module.css';
 import PropTypes from 'prop-types';
 
-export default function Button({ title, onClickBtn }) {
+export default function Button({ title, onLoadMoreInButton }) {
   return (
-    <button type="button" onClick={onClickBtn} className={s.button}>
+    <button type="button" onClick={onLoadMoreInButton} className={s.button}>
       {title}
     </button>
   );
 }
 
 Button.propTypes = {
-  onClickBtn: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  onLoadMoreInButton: PropTypes.func.isRequired,
 };

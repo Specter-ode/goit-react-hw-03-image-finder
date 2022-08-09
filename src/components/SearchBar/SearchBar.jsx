@@ -1,4 +1,5 @@
 import s from './SearchBar.module.css';
+import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { ImSearch } from 'react-icons/im';
 import { toast } from 'react-toastify';
@@ -23,7 +24,6 @@ export default class SearchBar extends Component {
       });
       return;
     }
-
     this.props.onClickSubmit(searchValueInForm);
     this.setState({ searchValueInForm: '' });
   };
@@ -49,3 +49,7 @@ export default class SearchBar extends Component {
     );
   }
 }
+
+SearchBar.propTypes = {
+  onClickSubmit: PropTypes.func.isRequired,
+};
