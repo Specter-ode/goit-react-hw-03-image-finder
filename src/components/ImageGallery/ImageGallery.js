@@ -17,6 +17,7 @@ export default class ImageGallery extends Component {
     loading: false,
     error: null,
     showModal: false,
+    pageNumber: 1,
   };
   componentDidMount() {
     toast.success(`Welcome !!!`, {
@@ -26,22 +27,24 @@ export default class ImageGallery extends Component {
   }
   componentDidUpdate(prevProps, prevState) {
     const newRequest = this.props.request;
-    const newPageNumber = this.props.pageNumber;
+    const newPageNumber = this.state.pageNumber;
     if (newRequest !== prevProps.request) {
-      this.setState({ cards: [], totalPages: '' });
-      this.fetchImages();
+      this.setState({ cards: [], totalPages: '', pageNumber: 1 });
+      this.fetchImages(1);
+      return;
     }
-    if (newPageNumber > prevProps.pageNumber) {
-      this.fetchImages();
+    if (newPageNumber > prevState.pageNumber) {
+      this.fetchImages(newPageNumber);
     }
   }
 
-  async fetchImages() {
+  async fetchImages(pageNumber) {
     this.setState({
       loading: true,
       error: false,
     });
-    const { request, pageNumber } = this.props;
+    const { request } = this.props;
+    // const { pageNumber } = this.state;
     try {
       const { hits, totalHits } = await getImages(request, pageNumber);
       const total = Math.ceil(totalHits / 12);
@@ -90,10 +93,17 @@ export default class ImageGallery extends Component {
       showModal: true,
     });
   };
+  onLoadMoreInGallery = () => {
+    this.setState(({ pageNumber }) => ({
+      pageNumber: pageNumber + 1,
+    }));
+  };
   render() {
     const { cards, loading, modalContent, description, showModal, totalPages } = this.state;
-    const { setModalContent, toggleModal } = this;
-    const { pageNumber, onLoadMoreInGallery } = this.props;
+    // const { setModalContent, toggleModal } = this;
+    // const { pageNumber, onLoadMoreInGallery } = this.props;
+    const { setModalContent, toggleModal, onLoadMoreInGallery } = this;
+    const { pageNumber } = this.state;
     const elements = cards.map(element => (
       <ImageGalleryItem key={element.id} {...element} onClickImage={setModalContent} />
     ));
@@ -115,6 +125,6 @@ export default class ImageGallery extends Component {
 
 ImageGallery.propTypes = {
   request: PropTypes.string.isRequired,
-  pageNumber: PropTypes.number.isRequired,
-  onLoadMoreInGallery: PropTypes.func.isRequired,
+  // pageNumber: PropTypes.number.isRequired,
+  // onLoadMoreInGallery: PropTypes.func.isRequired,
 };
