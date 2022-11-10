@@ -10,8 +10,8 @@ export default class App extends Component {
     searchValueInApp: '',
   };
 
-  handleFormSubmit = searchValueInApp => {
-    this.setState({ searchValueInApp });
+  handleFormSubmit = searchValue => {
+    this.setState({ searchValue });
   };
 
   render() {
@@ -19,11 +19,7 @@ export default class App extends Component {
     return (
       <div className={s.app}>
         <SearchBar onClickSubmit={this.handleFormSubmit} />
-        <ImageGallery
-          request={searchValueInApp}
-          // pageNumber={page}
-          // onLoadMoreInGallery={this.onLoadMoreInApp}
-        />
+        <ImageGallery request={searchValueInApp} />
         <ToastContainer autoClose={2500} hideProgressBar />
       </div>
     );
